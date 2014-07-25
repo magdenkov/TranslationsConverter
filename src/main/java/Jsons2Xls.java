@@ -4,7 +4,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -18,17 +17,38 @@ import java.util.*;
  */
 public class Jsons2Xls {
 
+    public static final String DST_XLS_FILE = "d:\\translaadwewewew.xls";
+    public static final String SRC_FOLDER = "d:\\trans";
+
+
     public static void main(String[] args) throws IOException {
         String [] files = new  String[20];
         files[0] =  "d:/en.js";
         files[1] =  "d:/fr.js";
         files[2] =  "d:/de.js";
 
+        File folder = new File(SRC_FOLDER);
+        File[] listOfFiles;
+        if (!folder.isDirectory()) {
+             return;
+        }
+
+        listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            if (file.isFile()) {
+                System.out.println(file.getName());
+            }
+        }
+
+
+
+
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Sheet1");
 
-        Map<String, String[]> constTranslations = new HashMap<String, String[]>();
+        Map<String, String[]> constTranslations = new LinkedHashMap<String, String[]>();
 
         int ii = 0;
         boolean firstTime = true;
@@ -76,10 +96,7 @@ public class Jsons2Xls {
         }
 
         for (String name: constTranslations.keySet()){
-
-
             String [] value = constTranslations.get(name);
-
             StringBuffer result = new StringBuffer();
             if (value != null) {
                 for (int i = 0; i < value.length; i++) {
@@ -88,10 +105,7 @@ public class Jsons2Xls {
                 String mynewstring = result.toString();
                 System.out.println(name + " " + mynewstring);
             }
-
-
         }
-
 
         int rownum = 0;
         for (String s: constTranslations.keySet()){
@@ -112,34 +126,13 @@ public class Jsons2Xls {
                     cell.setCellValue(ss);
                     cellNum++;
                 }
-
             }
-
-
-
-
-           /* String[] words = s.split(":");
-            words[1].replaceAll(",\"", "");
-
-            Cell cell = row.createCell(0);
-            cell.setCellValue(words[0]);
-            cell = row.createCell(1);
-            cell.setCellValue(words[1]);*/
         }
 
-
-
-
-
-
-        FileOutputStream out =
-                new FileOutputStream(new File("d:\\translaadwewewew.xls"));
+        FileOutputStream out = new FileOutputStream(new File(DST_XLS_FILE));
         workbook.write(out);
         out.close();
         System.out.println("Excel written successfully..");
-
-
-
 
     }
 
