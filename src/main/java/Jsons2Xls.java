@@ -41,12 +41,18 @@ public class Jsons2Xls {
             }
         }
 
-
-
-
-
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Sheet1");
+
+        List <String> languageKeys = new LinkedList<String>();
+        Row row1 = sheet.createRow(0);
+        for (String f : files) {
+            if (f == null) {
+                break;
+            }
+            languageKeys.add(f.substring(f.length() - 6, f.length() - 1));
+        }
+        // here wite en fr de
 
         Map<String, String[]> constTranslations = new LinkedHashMap<String, String[]>();
 
@@ -68,9 +74,11 @@ public class Jsons2Xls {
                     if (s.contains("translations") || s.contains("}")) {
                         continue;
                     }
-                    String[] words = s.split(":");
-                    words[1].replaceAll(",\"", "");
-                    constTranslations.put(words[0], new String[3]);
+                    if (s.contains(":")) {
+                        String[] words = s.split(":");
+                        words[1].replaceAll(",\"", "");
+                        constTranslations.put(words[0], new String[3]);
+                    }
                 }
                 firstTime = false;
             }
@@ -107,7 +115,7 @@ public class Jsons2Xls {
             }
         }
 
-        int rownum = 0;
+        int rownum = 1;
         for (String s: constTranslations.keySet()){
 
             Row row = sheet.createRow(rownum++);

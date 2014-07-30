@@ -11,14 +11,12 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 
 public class Xls2Jsons {
+
     private final static String SRC_XLSX = "d://translations.xlsx";
     public static final String DISTANATION_FOLDER = "d://";
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) throws Exception {
-        FileInputStream inp = new FileInputStream( new File(SRC_XLSX ));
+        FileInputStream inp = new FileInputStream(new File(SRC_XLSX ));
         Workbook workbook = WorkbookFactory.create(inp);
 
         // Get the first Sheet.
@@ -30,42 +28,49 @@ public class Xls2Jsons {
             Row row = rowIterator.next();
             //For each row, iterate through all the columns
             Iterator<Cell> cellIterator = row.cellIterator();
-            List <String> translations = new ArrayList<String>();
-            while (cellIterator.hasNext()){
-                Cell cell = cellIterator.next();
-                translations.add(cell.getStringCellValue());
-            }
+            List<String> translations = getTranslations(cellIterator);
 
-            for (int i = 0; i < jsonsArray.size(); i++){
-                if (translations.size() > 1) {
-                    FileJson fileJson = jsonsArray.get(i);
-                    fileJson.getJson().append(translations.get(0)).
-                            append(": \"").append(translations.get(i + 1)).append("\",\n");
-                }
-
-                if (translations.size() == 1) {
-                    FileJson fileJson = jsonsArray.get(i);
-                    fileJson.getJson().append("//").append(translations.get(0)).append("\n");
-                }
-            }
-
+            mapJsonsToTranslations(jsonsArray, translations);
         }
 
+        writeAllFilesToDisk(jsonsArray);
+    }
+
+    private static void mapJsonsToTranslations(List<FileJson> jsonsArray, List<String> translations) {
+        for (int i = 0; i < jsonsArray.size(); i++){
+            if (translations.size() > 1) {
+                FileJson fileJson = jsonsArray.get(i);
+                fileJson.getJson().append(translations.get(0)).append(": \"").append(translations.get(i + 1)).append("\",\n");
+            }
+
+            if (translations.size() == 1) {
+                FileJson fileJson = jsonsArray.get(0);
+                fileJson.getJson().append("//").append(translations.get(0)).append("\n");
+            }
+        }
+    }
+
+    private static void writeAllFilesToDisk(List<FileJson> jsonsArray) throws IOException {
         for (FileJson fileJson : jsonsArray) {
             System.out.println(fileJson.getJson().toString());
             cretetDirectories();
 
-
             String name = DISTANATION_FOLDER + fileJson.getName() + ".js";
             fileJson.getJson().append("}");
-            Writer writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(name), "utf-8"));
+            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(name), "utf-8"));
 
             writer.write(fileJson.getJson().toString());
             writer.close();
         }
+    }
 
-
+    private static List<String> getTranslations(Iterator<Cell> cellIterator) {
+        List <String> translations = new ArrayList<String>();
+        while (cellIterator.hasNext()){
+            Cell cell = cellIterator.next();
+            translations.add(cell.getStringCellValue());
+        }
+        return translations;
     }
 
     private static void cretetDirectories() {
