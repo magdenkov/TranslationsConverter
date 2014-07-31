@@ -22,18 +22,22 @@ public class Xls2Jsons {
         // Get the first Sheet.
         Sheet sheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = sheet.iterator();
-        List<FileJson> jsonsArray = getFileJsons(rowIterator);
+        List<FileJson> jsonsArray = createFileJsons(rowIterator);
 
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-            //For each row, iterate through all the columns
-            Iterator<Cell> cellIterator = row.cellIterator();
+            Iterator<Cell> cellIterator = getNextRow(rowIterator);
             List<String> translations = getTranslations(cellIterator);
 
             mapJsonsToTranslations(jsonsArray, translations);
         }
 
         writeAllFilesToDisk(jsonsArray);
+    }
+
+    private static Iterator<Cell> getNextRow(Iterator<Row> rowIterator) {
+        Row row = rowIterator.next();
+        //For each row, iterate through all the columns
+        return row.cellIterator();
     }
 
     private static void mapJsonsToTranslations(List<FileJson> jsonsArray, List<String> translations) {
@@ -80,9 +84,8 @@ public class Xls2Jsons {
         }
     }
 
-    private static List<FileJson> getFileJsons(Iterator<Row> rowIterator) {
-        Row row1 = rowIterator.next();
-        Iterator<Cell> cellIterator1 = row1.cellIterator();
+    private static List<FileJson> createFileJsons(Iterator<Row> rowIterator) {
+        Iterator<Cell> cellIterator1 = getNextRow(rowIterator);
         int amountOfLanguages = 0;
         List<FileJson> jsonsArray = new ArrayList<FileJson>();
         cellIterator1.next();
