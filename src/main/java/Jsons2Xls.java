@@ -12,13 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-/**
- * Created by denis.magdenkov on 23.07.2014.
- */
 public class Jsons2Xls {
 
-    public static final String DST_XLS_FILE = "d:\\translaadwewewew.xls";
-    public static final String SRC_FOLDER = "d:\\trans";
+    public static final String DISTANTION_XLS_FILE = "d:\\translaadwewewew.xls";
+ //   public static final String SRC_FOLDER = "d:\\trans";
 
 
     public static void main(String[] args) throws IOException {
@@ -27,7 +24,7 @@ public class Jsons2Xls {
         files[1] =  "d:/fr.js";
         files[2] =  "d:/de.js";
 
-        File folder = new File(SRC_FOLDER);
+        /*File folder = new File(SRC_FOLDER);
         File[] listOfFiles;
         if (!folder.isDirectory()) {
              return;
@@ -39,7 +36,7 @@ public class Jsons2Xls {
             if (file.isFile()) {
                 System.out.println(file.getName());
             }
-        }
+        }*/
 
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Sheet1");
@@ -137,7 +134,7 @@ public class Jsons2Xls {
             }
         }
 
-        FileOutputStream out = new FileOutputStream(new File(DST_XLS_FILE));
+        FileOutputStream out = new FileOutputStream(new File(DISTANTION_XLS_FILE));
         workbook.write(out);
         out.close();
         System.out.println("Excel written successfully..");
