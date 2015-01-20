@@ -1,5 +1,3 @@
-import com.google.gson.Gson;
-import org.json.JSONObject;
 
 /**
  * Created by denis.magdenkov on 22.07.2014.

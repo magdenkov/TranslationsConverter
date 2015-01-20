@@ -23,15 +23,21 @@ import java.util.*;
 
 public class Jsons2Xls {
 
-    public static final String DISTANTION_XLS_FILE = "d:\\vqadmintranslation.xls";
+    public static final String DISTANTION_XLS_FILE = "d:\\vqadmintranslation2.1.xls";
  //   public static final String SRC_FOLDER = "d:\\trans";
 
 
     public static void main(String[] args) throws IOException {
-        String [] files = new  String[20];
-        files[0] =  "C:/nginx/html/VQAdmin/translations/en.js";
+        String [] files = new  String[4];
+         files[0] =  "C:/nginx/html/VQAdmin/translations/en.js";
         files[1] =  "C:/nginx/html/VQAdmin/translations/fr.js";
-        files[2] =  "C:/nginx/html/VQAdmin/translations/de.js";
+         files[2] =  "C:/nginx/html/VQAdmin/translations/de.js";
+         files[3] =  "C:/nginx/html/VQAdmin/translations/es.js";
+        //  files[3] =  "C:/nginx/html/VQAdmin/translations/es.js";
+       // files[0] =  "C:/nginx/html/VQAdmin/translations/en.js";
+      //  files[1] =  "C:/nginx/html/VQAdmin/translations/fr.js";
+      //  files[2] =  "C:/nginx/html/VQAdmin/translations/de.js";
+      //  files[3] =  "C:/nginx/html/VQAdmin/translations/es.js";
        // files[2] =  "d:/de.js";
 
         /*File folder = new File(SRC_FOLDER);
@@ -78,14 +84,14 @@ public class Jsons2Xls {
                         constTranslations.put(s.replaceAll("//", ""), null);
                         continue;
                     }
-                    if (s.contains("translations") || s.contains("}")) {
+                    if (s.contains("translations") || (!s.contains(":") && s.contains("}"))) {
                         continue;
                     }
                     if (s.contains(":")) {
                         String[] words = s.split(":");
                         words[0] = words[0].trim();
                         words[1].replaceAll(",\"", "").trim();
-                        constTranslations.put(words[0].trim(), new String[3]);
+                        constTranslations.put(words[0].trim(), new String[files.length]);
                     }
                 }
                 firstTime = false;
@@ -94,7 +100,7 @@ public class Jsons2Xls {
 
             for (String s : stringsInFile) {
 
-                if (s.contains("translations") || s.contains("}") || s.contains("//")) {
+                if (s.contains("translations") || (!s.contains(":") && s.contains("}")) || s.contains("//")) {
                     continue;
                 }
 
@@ -105,7 +111,11 @@ public class Jsons2Xls {
                     words[1] = words[1].replaceAll(",", "").trim();
                     words[1] = words[1].replaceAll("\"", "").trim();
                     System.out.println(words[1] + words[0]);
+                    try {
                     constTranslations.get(words[0])[ii] = words[1];
+                    } catch (NullPointerException e) {
+                    	System.out.println("dsds");
+                    }
                 }
             }
             ii++;
@@ -172,6 +182,12 @@ public class Jsons2Xls {
         style.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         styles.put("styleValue2", style);
+        
+        style = createBorderedStyle(workbook);
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        styles.put("styleValue3", style);
 
         int rownum = 0;
         Row row = sheet.createRow(rownum++); 
